@@ -2,6 +2,8 @@
 #include <WiFi.h>
 #include "config.h"
 
+const int LED_PIN = D9;
+
 // TODO: Implement the WiFi event handler
 // This function is called when WiFi events occur (connect, disconnect, got IP)
 //
@@ -22,10 +24,12 @@ void onWiFiEvent(WiFiEvent_t event) {
         case ARDUINO_EVENT_WIFI_STA_GOT_IP:
             Serial.print("Got IP address: ");
             Serial.println(WiFi.localIP());
+            digitalWrite(LED_PIN, HIGH); // on = connected
             break;
 
         case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
             Serial.println("WiFi disconnected");
+            digitalWrite(LED_PIN, LOW);
             break;
 
         default:
@@ -48,9 +52,13 @@ bool connectToWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     unsigned long startTime = millis();
-    const unsigned long timeout = 10000; // 10 секунд
+    const unsigned long timeout = 10000;
+    bool ledState = false;
 
     while (WiFi.status() != WL_CONNECTED && millis() - startTime < timeout) {
+        ledState = !ledState;          // blinking = connecting
+        digitalWrite(LED_PIN, ledState);
+
         delay(500);
         Serial.print(".");
     }
@@ -58,15 +66,20 @@ bool connectToWiFi() {
     Serial.println();
 
     if (WiFi.status() == WL_CONNECTED) {
+        digitalWrite(LED_PIN, HIGH);
         return true;
     }
 
+    digitalWrite(LED_PIN, LOW);
     return false;
 }
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
+
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW);
 
     Serial.println("ESP32 WiFi Connect Example");
     Serial.println("============================");
@@ -89,9 +102,17 @@ void loop() {
     // TODO: Check connection status periodically
     // If disconnected, attempt to reconnect
     if (WiFi.status() != WL_CONNECTED) {
+        static bool ledState = false;
+
         Serial.println("Reconnecting...");
         WiFi.reconnect();
-    }
 
-    delay(5000);
+        ledState = !ledState;          // blinking while reconnecting
+        digitalWrite(LED_PIN, ledState);
+
+        delay(500);
+    } else {
+        digitalWrite(LED_PIN, HIGH);   // on = connected
+        delay(5000);
+    }
 }
