@@ -93,9 +93,13 @@ void setup() {
 
     if (connected) {
         Serial.println("Connection successful!");
+        Serial.print("Signal strength (RSSI): ");
+        Serial.print(WiFi.RSSI());
+        Serial.println(" dBm");
     } else {
         Serial.println("Connection failed!");
     }
+  
 }
 
 void loop() {
@@ -113,6 +117,11 @@ void loop() {
         delay(500);
     } else {
         digitalWrite(LED_PIN, HIGH);   // on = connected
+
+        Serial.print("Signal strength (RSSI): ");
+        Serial.print(WiFi.RSSI());
+        Serial.println(" dBm");
+
         delay(5000);
     }
 }
