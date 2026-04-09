@@ -1,2 +1,2 @@
-const char* WIFI_SSID = "TP-Link_5BF8";
-const char* WIFI_PASSWORD = "77484802";
+const char* WIFI_SSID = "POCO F3";
+const char* WIFI_PASSWORD = "eaxb0711";
