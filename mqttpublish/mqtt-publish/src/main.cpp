@@ -57,8 +57,8 @@ void publishSensorData() {
     int ldrValue = analogRead(LDR_PIN);
 
     // 2. Convert to string using String() or snprintf()
-    char payload[16];
-    snprintf(payload, sizeof(payload), "%d", ldrValue);
+   char payload[64];
+    snprintf(payload, sizeof(payload), "{\"light\": %d, \"unit\": \"raw\"}", ldrValue);
 
     // 3. Publish using mqttClient.publish(topic, payload)
     mqttClient.publish(MQTT_TOPIC, payload);
