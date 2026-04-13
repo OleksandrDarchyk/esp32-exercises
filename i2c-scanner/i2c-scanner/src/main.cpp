@@ -16,86 +16,57 @@ const char* identifyDevice(int address);
 
 // TODO: Implement function to scan I2C bus
 void scanI2C() {
-    // 1. Print header
-    // We print a title every time scanning starts,
-    // so it is easy to see a new scan in Serial Monitor.
     Serial.println("Scanning I2C bus...");
     Serial.println();
 
     int devicesFound = 0;
 
-    // 2. Loop through all possible 7-bit addresses (0x01 to 0x7F)
-    //    Address 0x00 is reserved for general call
-    //
-    // I2C usually uses 7-bit addresses.
-    // That gives addresses from 0x00 to 0x7F.
-    //
-    // We do NOT scan 0x00 because it is reserved.
-    // So we scan from 1 to 126.
-    //
-    // Important:
-    // address < 127 means the last checked address is 126.
-    for (int address = 1; address < 127; address++) {
-        // 3. Begin transmission to address
-        //    Wire.beginTransmission(address);
-        //
-        // This prepares an I2C transmission to one specific address.
-        // Think of it like:
-        // "Hello, device at this address, are you there?"
-        Wire.beginTransmission(address);
+    // Print top header
+    Serial.println("    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F");
 
-        // 4. End transmission and check result
-        //    byte error = Wire.endTransmission();
-        //    error == 0 means device acknowledged
-        //
-        // endTransmission() finishes the address check.
-        //
-        // Most important return values here:
-        // 0 = success, device answered with ACK
-        // 4 = other/unknown bus error
-        //
-        // If it is not 0, usually nothing answered on that address.
-        byte error = Wire.endTransmission();
+    // Rows: 0x00, 0x10, 0x20 ... 0x70
+    for (int row = 0; row < 8; row++) {
+        int baseAddress = row * 16;
 
-        // 5. If device found:
-        //    - Print address in hex format (0x00)
-        //    - Increment device counter
-        //    - Identify known devices (see table below)
-        if (error == 0) {
-            // Print the address in hexadecimal format.
-            // %02X means:
-            // %X  -> print number as HEX
-            // 02  -> minimum width 2 characters, add leading zero if needed
-            //
-            // Example:
-            // 10 decimal -> 0A hex
-            // 118 decimal -> 76 hex
-            Serial.printf("Found device at 0x%02X - %s\n", address, identifyDevice(address));
+        // Print row label: 00:, 10:, 20: ...
+        Serial.printf("%02X: ", baseAddress);
 
-            // Count how many devices answered.
-            devicesFound++;
-        }
-        else if (error == 4) {
-            // Optional: print unknown/bus errors.
-            // This is useful for debugging wiring or bus problems.
-            Serial.printf("Unknown error at 0x%02X\n", address);
+        // Columns: 0 ... F
+        for (int col = 0; col < 16; col++) {
+            int address = baseAddress + col;
+
+            // 0x00 is reserved, so we usually skip it
+            if (address == 0x00) {
+                Serial.print("   ");
+                continue;
+            }
+
+            Wire.beginTransmission(address);
+            byte error = Wire.endTransmission();
+
+            if (error == 0) {
+                // Device found -> print address
+                Serial.printf("%02X ", address);
+                devicesFound++;
+            } else {
+                // No device -> print --
+                Serial.print("-- ");
+            }
         }
 
-        // If error is something else, we do nothing.
-        // That simply means there is probably no device on that address.
+        Serial.println();
     }
 
-    // 6. Print summary
     Serial.println();
+
     if (devicesFound == 0) {
         Serial.println("No I2C devices found!");
-        digitalWrite(LED_PIN, LOW);   // LED off
+        digitalWrite(LED_PIN, LOW);
     } else {
         Serial.printf("Found %d device(s)\n", devicesFound);
-        digitalWrite(LED_PIN, HIGH);  // LED on
+        digitalWrite(LED_PIN, HIGH);
     }
 }
-
 // TODO: Implement function to identify common I2C devices
 const char* identifyDevice(int address) {
     // Return device name based on address
