@@ -7,6 +7,8 @@
 const int SDA_PIN = 21;
 const int SCL_PIN = 22;
 
+const int LED_PIN = 25; // D2 on your board
+
 // Forward declaration.
 // This tells the compiler that the function exists below.
 // Without this, scanI2C() may not know about identifyDevice().
@@ -87,8 +89,10 @@ void scanI2C() {
     Serial.println();
     if (devicesFound == 0) {
         Serial.println("No I2C devices found!");
+        digitalWrite(LED_PIN, LOW);   // LED off
     } else {
         Serial.printf("Found %d device(s)\n", devicesFound);
+        digitalWrite(LED_PIN, HIGH);  // LED on
     }
 }
 
@@ -156,6 +160,9 @@ void setup() {
     Serial.println("I2C Scanner");
     Serial.println("============");
 
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW);
+
     // TODO: Initialize I2C with Wire.begin(SDA, SCL)
     //
     // This starts the I2C bus using the chosen ESP32 pins.
@@ -168,6 +175,7 @@ void setup() {
     // Optional info so you clearly see which pins are used.
     Serial.printf("Using SDA = GPIO %d\n", SDA_PIN);
     Serial.printf("Using SCL = GPIO %d\n", SCL_PIN);
+    Serial.printf("Using LED = GPIO %d\n", LED_PIN);
     Serial.println();
 
     // TODO: Call scan function
