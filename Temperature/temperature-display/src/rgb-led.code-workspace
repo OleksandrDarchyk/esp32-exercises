@@ -1,0 +1,48 @@
+{
+  "folders": [
+	{
+		"path": "../../../../../Documents/PlatformIO/Projects/rgb-led"
+	},
+	{
+		"name": "button-input",
+		"path": "../../../../../Documents/PlatformIO/Projects/button-input"
+	},
+	{
+		"name": "Traffic Light",
+		"path": "../../../../../Documents/PlatformIO/Projects/Traffic Light"
+	},
+	{
+		"name": "trsffi light with button",
+		"path": "../../../../../Documents/PlatformIO/Projects/trsffi light with button"
+	},
+	{
+		"name": "analog-sensor",
+		"path": "../../../../../Documents/PlatformIO/Projects/analog-sensor"
+	},
+	{
+		"name": "wifi-connect",
+		"path": "../../../../../Documents/PlatformIO/Projects/wifi-connect"
+	},
+	{
+		"name": " wifi-connect",
+		"path": "../../../wifi-connect/ wifi-connect"
+	},
+	{
+		"name": "mqtt-publish",
+		"path": "../../../mqttpublish/mqtt-publish"
+	},
+	{
+		"name": "i2c-scanner",
+		"path": "../../../i2c-scanner/i2c-scanner"
+	},
+	{
+		"name": "bme280-sensor",
+		"path": "../../../bme280-sensor/bme280-sensor"
+	},
+	{
+		"name": "temperature-display",
+		"path": ".."
+	}
+],
+  "settings": {}
+}
